@@ -13,6 +13,7 @@ Recorded from the source walkthrough on 2026-09-11; these are an implementation 
 | Identity Center assignment | Read-only inspection found the intended user in the scoped group and the permission set assigned to the intended account | Other administrative assignments also existed; this did not prove exclusive access |
 | Scoped SSO tunnel | Session Manager showed a connected custom-document session owned by the expected generated SSO role | A connected tunnel is not proof of host authorization, direct-SSH removal, or session timeout |
 | MobaXterm connection | Operator reported a successful connection | No independent automated MobaXterm/SFTP test was captured |
+| Existing direct SSH route | Operator reported that public-IP SSH still worked; read-only inspection found an inbound rule limited to the operator's source IP | The IP restriction was a real control, but AWS authorization remained optional for that route; its removal was not verified |
 | IAM policy validation | Access Analyzer validation returned no findings | Static validation does not prove effective authorization |
 | Resource-scope simulation | Allowed intended target/document and denied alternate resources in simulation | Simulation context is not a substitute for real API denial cases |
 

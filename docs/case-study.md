@@ -4,7 +4,7 @@
 
 ## Starting point
 
-The source lab used MobaXterm on Windows to reach a Linux EC2 instance with a private SSH key. The operator wanted a stronger access model without losing the terminal and file browser. The investigation initially focused on whether Session Manager could replace the key, then became a review of the boundaries between AWS authentication, network access, and Linux authorization.
+The source lab used MobaXterm on Windows to reach a Linux EC2 instance with a private SSH key and a security-group rule restricted to the operator's public IP. Those were existing authentication and network controls. The operator wanted AWS identity to govern the access path while retaining the terminal and file browser. The investigation initially focused on whether Session Manager could replace the key, then became a review of the boundaries between AWS authentication, network access, and Linux authorization.
 
 The useful result was both a working scoped SSO tunnel and a repeatable onboarding toolkit. The wider hardening work was not treated as complete just because a terminal opened.
 
@@ -27,6 +27,8 @@ The original working launcher had deployment-specific identifiers. This reposito
 **5. A secure transport does not prove a secure host.** The source lab still required verification of direct-SSH retirement, instance-role reduction, host privileges, durable audit controls, and recovery. Those controls are explicit acceptance work in this project. A narrow human policy cannot compensate for broad credentials exposed from the instance profile.
 
 **6. Audit limitations are a design choice, not a footnote.** CloudTrail can help attribute session lifecycle events, but Session Manager cannot inspect the inner SSH stream. Keeping MobaXterm comes with that tradeoff. Requirements for command recording or short-lived host credentials would change the selected architecture.
+
+**7. Choose controls against requirements.** A follow-up review found that the original public-IP SSH route still worked and was restricted to the operator's IP. That restriction was meaningful; the route nevertheless allowed access without AWS authorization. Requiring SSM would meet the project's identity requirement once the direct route was closed and verified. It would also add service and agent dependencies and, under the reference policy, allow authorized tunnel requests from other networks. The lesson was to explain that tradeoff accurately instead of calling one approach a universal enterprise standard.
 
 ## What was demonstrated
 

@@ -4,6 +4,8 @@
 
 Use a disposable Linux EC2 lab in a workload account. Keep organization management and routine host access separate. If an organization already manages identity, ask its administrator for the assignment; do not replace its identity source or create a parallel directory.
 
+Use this walkthrough when authorized operators need SSH/SFTP and the organization wants AWS authorization to govern the access path. Confirm that requirement against the [architecture alternatives](decisions/001-access-pattern.md) before choosing the pattern. IP-restricted SSH can also be appropriate; this runbook implements the SSM option with direct inbound SSH retired after verification.
+
 This guide assumes an authorized administrator can configure IAM Identity Center, IAM, Systems Manager, and the lab's EC2 settings. The eventual operator permission set intentionally cannot perform those administrative steps. Keep a tested recovery method available throughout the migration. Console labels can change; the resource names and checks below identify the intended settings.
 
 ## 1. Write down the scope

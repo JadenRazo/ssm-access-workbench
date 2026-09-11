@@ -6,7 +6,7 @@ Use this as a study guide, not as a substitute for evidence. Say what you built 
 
 ## A 60-second explanation
 
-> I built a PowerShell onboarding and access toolkit for Windows operators who want to keep MobaXterm while placing AWS identity in front of SSH. The design uses IAM Identity Center, a narrowly scoped Session Manager permission set, and a custom document that forwards only to SSH on the approved EC2 instance. The client checks the actual AWS account and role before opening the tunnel, because I encountered a case where an SSO profile selected an administrator role in the wrong account. MobaXterm still authenticates a Linux account with its SSH key. I documented the tradeoffs, including the lack of SSH command recording in SSM, and separated the working tunnel evidence from the remaining network, host, and recovery acceptance checks.
+> I built a PowerShell onboarding and access toolkit for authorized Windows operators who need MobaXterm's SSH and SFTP workflow. The requirement was to make AWS identity govern the access path. I chose Identity Center and a scoped Session Manager tunnel; Linux still authenticates the SSH key. IP-restricted SSH was a valid alternative, but it did not meet that AWS authorization requirement. The launcher checks the actual account and role because the original SSO profile selected an administrator role in the wrong account. I documented the added service dependencies, the lack of SSH command recording in SSM, and the network, host, and recovery checks still required. This is a reference design for those requirements, not a universal enterprise standard.
 
 Practice the explanation in your own words. Be ready to point to the implementation and test that support each sentence.
 
@@ -22,9 +22,10 @@ Practice the explanation in your own words. Be ready to point to the implementat
 
 | Question | A defensible answer |
 | :--- | :--- |
-| Why is this better than an IP-restricted SSH rule? | It adds centralized AWS authorization for establishing the route and permits removal of direct inbound SSH. The comparison depends on actually closing alternate routes and protecting both credential layers. |
+| When would you choose this over IP-restricted SSH? | When authorized users need SSH/SFTP and AWS identity must govern the route. IP-restricted SSH already requires an approved network and host authentication. SSM adds centralized AWS authorization and service dependencies; it does not automatically retain the IP restriction. |
+| Is this the enterprise best practice? | There is no universal access pattern for every organization. This implementation addresses specific tooling and identity requirements. Native SSM, IP-restricted SSH, or a certificate-based platform may fit different audit, network, and recovery requirements better. |
 | Does it eliminate SSH keys? | No. The tunnel carries SSH. Native SSM or an SSH certificate design would change the host authentication model. |
-| Can someone with my key still connect? | They still need a reachable SSH path. A new SSM tunnel needs AWS authorization, but a direct route, VPN, compromised endpoint, or existing local listener may provide reachability. |
+| Can someone with my key still connect? | They still need a reachable SSH path. An IP restriction blocks the direct route from other networks; a new SSM tunnel needs AWS authorization. An alternate route or existing tunnel can change that, and a compromised laptop may expose both credentials. |
 | Is MFA required every time? | It is enforced at AWS sign-in according to identity policy. Cached sessions and an existing tunnel have separate lifetimes. |
 | Why does one policy resource use `*`? | `ssmmessages:OpenDataChannel` does not support resource-level ARNs. The instance and document restrictions belong to `StartSession`; session cleanup has its own conditions. |
 | Why both an instance and document ARN? | Restricting the node alone can leave unintended session types. The document fixes the approved entry point; negative tests include other documents and omitting the document. |
@@ -50,3 +51,5 @@ Explain the wrong-role incident using **expected behavior → observation → di
 “Built an interactive PowerShell toolkit and console runbooks for MobaXterm access to Linux EC2 through IAM Identity Center and a scoped Session Manager tunnel; added account/role validation, fixed-port policy generation, failure-path tests, and documented audit and offboarding tradeoffs.”
 
 Avoid describing it as “implemented enterprise zero-trust access,” “eliminated all SSH risk,” or “fully audited production access.” Those claims exceed the demonstrated scope.
+
+Explain the decision as: “I evaluated the existing IP and key controls, identified the requirement for centralized AWS authorization, and preserved the operator's required SSH workflow with documented tradeoffs.”

@@ -2,7 +2,26 @@
 
 [← Project overview](../README.md)
 
-This design reduces exposure by placing an AWS authorization decision in front of SSH and then closing the direct inbound route. It does not make the workstation or Linux host a trusted environment automatically.
+This reference design makes AWS authorization a requirement for authorized operators to establish an SSH access path, provided alternate routes are closed. It is intended for teams that need existing SSH/SFTP tooling. Its suitability depends on the organization's identity, network, audit, and recovery requirements; using SSM does not establish that it is the most secure choice for every environment.
+
+## Compared with IP-restricted SSH
+
+A source-IP restriction is a meaningful control. With no other reachable SSH path, an attacker who steals a key but connects from a different network is blocked by the security group. The allowed public IP identifies network egress, however; multiple devices behind a router can share it. It does not establish an individual person's identity. AWS documents restricting SSH to a specific computer or network as a security-group use case. [EC2 security-group rules](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules-reference.html)
+
+| Consideration | Direct SSH restricted to an approved IP | SSH through SSO/SSM with inbound SSH closed |
+| :--- | :--- | :--- |
+| Access checks | Approved network source plus Linux SSH authentication | AWS authorization to open the tunnel plus Linux SSH authentication |
+| Stolen SSH key from another network | Source restriction blocks the direct route | Key alone cannot create a new SSM tunnel; another reachable route or existing tunnel changes the analysis |
+| Operator mobility | A new source IP requires an approved network-rule change or access through approved egress | Authorized credentials can open a tunnel from other networks unless separate network restrictions apply |
+| Access administration | Manage network rules and host credentials | Also manage individual AWS assignments, issued credentials, and active SSM sessions centrally |
+| Connection dependencies | Working network route and SSH service | Also requires AWS authentication, Session Manager connectivity, and a working SSM agent |
+| Audit coverage | Host logging must be configured and assessed | Adds AWS session lifecycle evidence; SSM cannot record SSH commands or file contents |
+
+The reference policy does **not** restrict the caller to the old source IP. Teams that require both identity and approved-network access need an additional, reviewed network restriction and acceptance tests; this toolkit does not implement that combination. SSM therefore changes the set of controls rather than automatically preserving every protection of an IP-restricted design.
+
+Both approaches use encrypted SSH. The reason to choose this pattern is centralized AWS authorization and removal of the direct inbound route, not a claim that ordinary SSH lacks encryption. A compromised workstation may expose both usable AWS credentials and an unlocked SSH key, so the two credential layers do not provide independent protection against every endpoint compromise. [AWS SSH connection model and logging limits](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-getting-started-enable-ssh-connections.html)
+
+IP-restricted SSH can be appropriate when approved network access and host-credential management meet the team's requirements. This pattern fits when AWS identity must govern the route and retaining SSH/SFTP is an operational requirement. The [decision record](decisions/001-access-pattern.md) also compares native SSM and certificate-based access.
 
 ## Threats and boundaries
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Clarify the intended audience and access requirements across the README, security model, console guide, decision record, and case study.
+- Compare IP-restricted SSH and SSO/SSM fairly, including network controls, service dependencies, and credential exposure; update interview guidance and record the observed direct-route limitation.
+
 ## 0.1.0 — 2026-09-11
 
 Initial reference implementation:

@@ -8,7 +8,7 @@
 
 **Keep MobaXterm. Put AWS identity in front of the connection.**
 
-Interactive PowerShell tools and an AWS console guide for SSH access to a Linux EC2 instance through IAM Identity Center and Session Manager.
+Interactive PowerShell tools and an AWS console guide for authorized Windows operators who need MobaXterm SSH/SFTP access to Linux EC2 through IAM Identity Center and Session Manager.
 
 [Start the lab](docs/aws-console-setup.md) · [Set up Windows](docs/windows-setup.md) · [Understand the design](docs/architecture.md) · [Read the case study](docs/case-study.md)
 
@@ -18,11 +18,17 @@ Interactive PowerShell tools and an AWS console guide for SSH access to a Linux 
 
 ## The problem
 
-A Windows operator has a private SSH key, a saved MobaXterm session, and an EC2 security group that permits direct SSH. It is convenient, but the key and network path can outlive the operator's AWS access. Moving the connection behind Session Manager adds an AWS authorization decision while preserving the terminal and SFTP workflow.
+A Windows operator needs MobaXterm's terminal and SFTP browser, while the team wants centrally managed AWS authorization to be required for opening the access path. An SSH key and a source-IP restriction already provide authentication and network filtering, but they operate independently of the operator's AWS access. An SSM tunnel can make AWS authorization part of this workflow once alternate routes are closed.
 
 This project packages that migration into something another operator can repeat: a console walkthrough, narrowly scoped policy templates, interactive workstation setup, and a launcher that refuses the wrong AWS account or role.
 
 **The target design closes inbound TCP 22 after testing recovery.** Creating a tunnel alone does not remove the old route. SSH still authenticates a Linux account with its own key, and Session Manager does not record the contents of the SSH session. [AWS SSH documentation](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-getting-started-enable-ssh-connections.html)
+
+## Where this pattern fits
+
+**This is a reference implementation for a specific access requirement, not an absolute best practice or a universal enterprise standard.** It fits authorized operators who need existing SSH/SFTP tooling and a team that wants to manage the AWS access path through Identity Center. Administrators must grant both the AWS permissions and the appropriate Linux access; installing the toolkit grants neither.
+
+IP-restricted SSH with protected keys can also be a defensible design. This pattern adds centralized AWS authorization and supports removing inbound SSH, while retaining host credentials and adding dependencies on AWS sign-in, Session Manager, and its agent. It does not automatically retain the old source-IP restriction. Choose based on access, audit, network, and recovery requirements. [Compare the controls](docs/security-model.md#compared-with-ip-restricted-ssh) · [Review the alternatives](docs/decisions/001-access-pattern.md)
 
 ## The access path
 
@@ -78,12 +84,12 @@ Save a MobaXterm session for `127.0.0.1`, port `2222` (or your agreed document p
 | :--- | :--- | :--- |
 | Identity Center with MFA | Centralized sign-in and temporary AWS credentials | A new MFA challenge for every SSH connection |
 | One instance + one custom document | Restricts this role's Session Manager entry point | Restricts everything an authenticated shell can do |
-| Close inbound SSH after verification | Removes the direct network route protected only by SSH authentication | Makes an exposed private key harmless on every network |
+| Close inbound SSH after verification | Removes the direct route that relies on network rules and SSH authentication | Makes an exposed private key harmless on every network |
 | Separate Linux authentication | Preserves SSH/SFTP and an OS authorization boundary | Automatically maps the SSO user to an individual Linux account |
 | Session lifecycle audit | Records AWS control-plane activity | Records SSH commands or SFTP file contents |
 | Account and role checks in the launcher | Catches wrong-profile and administrator-role mistakes | A security boundary against a user who can edit the script |
 
-There is no single universal “enterprise standard.” This design fits teams that need existing SSH tooling and accept its audit tradeoff. A native SSM shell or a certificate-based access platform may be a better choice when keyless access, command recording, or just-in-time host credentials are requirements. [Decision record →](docs/decisions/001-access-pattern.md)
+A native SSM shell or a certificate-based access platform may fit better when avoiding long-lived SSH keys, recording commands, or issuing short-lived host credentials is required. Evaluate each option's actual capabilities and recovery requirements. [Decision record →](docs/decisions/001-access-pattern.md)
 
 ## Evidence, not a completion badge
 
