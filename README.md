@@ -4,6 +4,8 @@
 
 # SSM Access Workbench
 
+[![Verify](https://github.com/JadenRazo/ssm-access-workbench/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/JadenRazo/ssm-access-workbench/actions/workflows/verify.yml)
+
 **Keep MobaXterm. Put AWS identity in front of the connection.**
 
 Interactive PowerShell tools and an AWS console guide for SSH access to a Linux EC2 instance through IAM Identity Center and Session Manager.

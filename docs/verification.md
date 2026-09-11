@@ -47,7 +47,7 @@ Before creating the remote repository on 2026-09-11:
 - The exact Mermaid sequence source parsed and rendered successfully with Mermaid 11.4.1 and was visually inspected.
 - All 34 external documentation/reference links resolved during the publication review. The automated repository check validates local links and anchors, JSON, SVG safety, example identifiers, and workflow permissions; it is not a complete secret scanner.
 
-Windows CI and the public workflow history provide the platform-specific evidence after the private staging run. Live workstation/cloud acceptance remains in the matrix below.
+The [private-stage CI run on commit `8e1484c`](https://github.com/JadenRazo/ssm-access-workbench/actions/runs/34558307181) then passed **47 tests on Windows Server 2025** (including real COM shortcut creation/inspection) and **46 tests on Ubuntu 24.04**. Both jobs passed 711 repository assertions. Windows initially exposed locale-dependent text decoding in the documentation check; explicitly reading UTF-8 corrected it. The [current workflow history](https://github.com/JadenRazo/ssm-access-workbench/actions/workflows/verify.yml) records subsequent revisions. Live workstation/cloud acceptance remains in the matrix below.
 
 ## Manual lab acceptance
 
