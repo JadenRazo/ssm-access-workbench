@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="894" viewBox="0 0 660 894" role="img" aria-labelledby="title desc">
+  <title id="title">The SSM Access Workbench access path</title>
+  <desc id="desc">Identity Center supplies temporary access after sign-in. On Windows, MobaXterm connects to the Session Manager plugin's loopback port. AWS authorizes a specific instance and document. The EC2 SSM agent maintains an outbound connection to AWS and connects locally to sshd on port 22. Closing inbound SSH is an explicit final migration step.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#466781"/></marker>
+  </defs>
+  <rect x="1" y="1" width="658" height="892" rx="18" fill="#f6f8fa" stroke="#d6e0e8"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="30" y="42" font-size="18" font-weight="700" letter-spacing="2" fill="#466176">TARGET ARCHITECTURE</text>
+    <rect x="28" y="64" width="604" height="119" rx="12" fill="#101d2d"/>
+    <text x="48" y="100" font-size="25" font-weight="700" fill="#f6f8fa">01   IAM Identity Center</text>
+    <text x="48" y="135" font-size="22" fill="#c7d5e1">Individual identity + MFA policy</text>
+    <text x="48" y="164" font-size="22" fill="#8de4c4">Temporary AWS access</text>
+    <path d="M74 185v52" stroke="#466781" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <text x="97" y="218" font-size="20" fill="#354f64">Sign in when required</text>
+
+    <rect x="28" y="251" width="604" height="160" rx="12" fill="#fff" stroke="#bdcdd9"/>
+    <text x="48" y="288" font-size="25" font-weight="700" fill="#142d42">02   Windows workstation</text>
+    <text x="48" y="324" font-size="22" fill="#354f64">Launcher verifies the account and role</text>
+    <rect x="47" y="345" width="566" height="45" rx="6" fill="#edf3f7"/>
+    <text x="62" y="374" font-size="21" fill="#142d42">MobaXterm → 127.0.0.1:2222 → plugin</text>
+    <path d="M74 413v62" stroke="#466781" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <text x="97" y="447" font-size="20" fill="#354f64">Client initiates outbound HTTPS</text>
+    <text x="97" y="472" font-size="18" fill="#466176">SSH runs inside the data channel</text>
+
+    <rect x="28" y="490" width="604" height="119" rx="12" fill="#e8f5ef" stroke="#9fc7b6"/>
+    <text x="48" y="527" font-size="25" font-weight="700" fill="#153b2e">03   AWS Session Manager</text>
+    <text x="48" y="562" font-size="22" fill="#28563f">IAM authorizes the instance + document</text>
+    <text x="48" y="590" font-size="22" fill="#28563f">Custom document fixes remote TCP 22</text>
+    <path d="M74 676v-53" stroke="#466781" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <text x="97" y="646" font-size="20" fill="#354f64">Agent initiates outbound HTTPS</text>
+    <text x="97" y="671" font-size="18" fill="#466176">AWS relays traffic over this connection</text>
+
+    <rect x="28" y="690" width="604" height="119" rx="12" fill="#fff" stroke="#bdcdd9"/>
+    <text x="48" y="727" font-size="25" font-weight="700" fill="#142d42">04   Linux EC2 instance</text>
+    <text x="48" y="762" font-size="22" fill="#354f64">SSM agent → sshd :22 → Linux account</text>
+    <text x="48" y="790" font-size="22" fill="#354f64">SSH host verification + key authentication</text>
+
+    <text x="30" y="849" font-size="21" font-weight="700" fill="#142d42">Close inbound SSH after access + recovery tests.</text>
+    <text x="30" y="876" font-size="19" fill="#466176">SSM records lifecycle activity, not SSH contents.</text>
+  </g>
+</svg>

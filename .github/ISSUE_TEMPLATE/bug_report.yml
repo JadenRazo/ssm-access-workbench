@@ -1,0 +1,37 @@
+name: Bug report
+description: Report a reproducible toolkit or documentation problem using sanitized examples.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For vulnerabilities, use the private reporting process in SECURITY.md.
+        Never include AWS credentials, SSO caches, private keys, actual deployment identifiers, or raw debug logs.
+  - type: input
+    id: version
+    attributes:
+      label: Commit or release
+      description: Which revision did you use?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Windows edition, PowerShell version, AWS CLI version, plugin version, and MobaXterm version if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction and result
+      description: Include the script or documentation step, expected result, actual result, and sanitized error name. Use fictional identifiers from examples/.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Public report check
+      options:
+        - label: This report contains no credentials, private keys, personal portal URLs, or actual account/session identifiers.
+          required: true

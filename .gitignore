@@ -1,0 +1,18 @@
+# Local deployment material must never become portfolio content.
+.local/
+generated/
+*.local.json
+*.pem
+*.ppk
+*.key
+*.pfx
+*.p12
+id_rsa*
+id_ed25519*
+.aws/
+*.log
+*.lnk
+TestResults/
+__pycache__/
+.DS_Store
+Thumbs.db

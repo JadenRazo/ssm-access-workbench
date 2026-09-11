@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Forward local TCP 2222 to SSH TCP 22 on the target managed node.",
+  "sessionType": "Port",
+  "properties": {
+    "portNumber": "22",
+    "type": "LocalPortForwarding",
+    "localPortNumber": "2222"
+  }
+}

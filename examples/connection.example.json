@@ -1,0 +1,12 @@
+{
+  "SchemaVersion": 1,
+  "Profile": "workbench-sso",
+  "Region": "us-east-1",
+  "AccountId": "111122223333",
+  "InstanceId": "i-0123456789abcdef0",
+  "DocumentName": "Workbench-SSHOnly",
+  "PermissionSetName": "WorkbenchSSH",
+  "LocalPort": 2222,
+  "LinuxUser": "alex",
+  "ExpectedRole": "AWSReservedSSO_WorkbenchSSH_0123456789abcdef"
+}
