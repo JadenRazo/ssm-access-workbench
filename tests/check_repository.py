@@ -77,7 +77,7 @@ for path in files():
             require(target.is_relative_to(ROOT), f'{rel}: link escapes repository: {link}')
             require(target.is_file(), f'{rel}: broken local link: {link}')
             if target.is_file() and parts.fragment and target.suffix == '.md':
-                require(unquote(parts.fragment) in headings(target.read_text()), f'{rel}: missing anchor: {link}')
+                require(unquote(parts.fragment) in headings(target.read_text(encoding='utf-8')), f'{rel}: missing anchor: {link}')
 
     if path.suffix == '.svg':
         try:
@@ -94,13 +94,13 @@ for path in files():
         except ET.ParseError as exc:
             errors.append(f'{rel}: invalid SVG: {exc}')
 
-policy = json.loads((ROOT / 'examples/permission-set.json').read_text())
+policy = json.loads((ROOT / 'examples/permission-set.json').read_text(encoding='utf-8'))
 statements = policy['Statement']
 require(len({s['Sid'] for s in statements}) == len(statements), 'Policy statement Sids must be unique')
 require({s['Action'] for s in statements} == {'ssm:StartSession', 'ssmmessages:OpenDataChannel', 'ssm:TerminateSession'}, 'Unexpected example policy action')
 require(all('Resource' in s for s in statements), 'Each policy statement must include Resource')
 require(statements[2]['Condition']['StringEquals']['ssm:resourceTag/aws:ssmmessages:session-id'] == '${aws:userid}', 'Federated owner IAM variable must remain literal')
-workflow = (ROOT / '.github/workflows/verify.yml').read_text()
+workflow = (ROOT / '.github/workflows/verify.yml').read_text(encoding='utf-8')
 for action in re.findall(r'uses:\s*(\S+)', workflow):
     require(bool(re.fullmatch(r'[\w./-]+@[0-9a-f]{40}', action)), 'Actions must be pinned to immutable commits')
 require('contents: read' in workflow and 'persist-credentials: false' in workflow, 'CI must use read-only permissions and discard checkout credentials')
